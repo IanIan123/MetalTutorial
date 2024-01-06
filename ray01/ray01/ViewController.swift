@@ -2,7 +2,7 @@ import UIKit
 import MetalKit
 
 enum Colors {
-    static let wenderlichGreen = MTLClearColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
+    static let wenderlichGreen = MTLClearColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 1.0)
 }
 
 class ViewController: UIViewController {
@@ -11,34 +11,14 @@ class ViewController: UIViewController {
         return view as! MTKView
     }
     
-    var device: MTLDevice!
-    var commandQueue: MTLCommandQueue!
+    var renderer: Renderer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        metalView.device = MTLCreateSystemDefaultDevice()
-        device = metalView.device
+        renderer = Renderer(device: MTLCreateSystemDefaultDevice()!)
         
+        metalView.device = renderer.device
         metalView.clearColor = Colors.wenderlichGreen
-        metalView.delegate = self
-        
-        commandQueue = device.makeCommandQueue()
-    }
-}
-
-extension ViewController: MTKViewDelegate {
-    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) { }
-    
-    func draw(in view: MTKView) {
-        guard let drawable = view.currentDrawable,
-              let descriptor = view.currentRenderPassDescriptor else {
-            return
-        }
-        let commandBuffer = commandQueue.makeCommandBuffer()
-        let commandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: descriptor)
-        
-        commandEncoder?.endEncoding()
-        commandBuffer?.present(drawable)
-        commandBuffer?.commit()
+        metalView.delegate = renderer
     }
 }
