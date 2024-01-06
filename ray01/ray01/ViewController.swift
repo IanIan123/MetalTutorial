@@ -24,8 +24,6 @@ class ViewController: UIViewController {
         
         commandQueue = device.makeCommandQueue()
     }
-
-
 }
 
 extension ViewController: MTKViewDelegate {
@@ -37,13 +35,10 @@ extension ViewController: MTKViewDelegate {
             return
         }
         let commandBuffer = commandQueue.makeCommandBuffer()
-        
         let commandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: descriptor)
         
         commandEncoder?.endEncoding()
         commandBuffer?.present(drawable)
         commandBuffer?.commit()
-        
-        
     }
 }
